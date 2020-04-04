@@ -1,0 +1,8 @@
+on property:sys.user.0.ce_available=true
+    start vendor.anxcameradata
+
+service vendor.anxcameradata /system/bin/anx-transfer-feature.sh
+    class late_start
+    user root
+    group root
+    oneshot
