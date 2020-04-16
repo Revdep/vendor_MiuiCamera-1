@@ -16,9 +16,7 @@ VENDOR_PATH := vendor/MiuiCamera
 
 PRODUCT_COPY_FILES += \
 	$(call find-copy-subdir-files,*,$(VENDOR_PATH)/system/etc,system/etc) \
-   	$(call find-copy-subdir-files,*,$(VENDOR_PATH)/system/priv-app/MiuiCamera/lib/arm64,system/priv-app/MiuiCamera/lib/arm64) \
-	$(VENDOR_PATH)/init/anx-transfer-feature.sh:$(TARGET_COPY_OUT_SYSTEM)/bin/anx-transfer-feature.sh \
-	$(VENDOR_PATH)/init/anxcamera.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/anxcamera.rc
+   	$(call find-copy-subdir-files,*,$(VENDOR_PATH)/system/priv-app/MiuiCamera/lib/arm64,system/priv-app/MiuiCamera/lib/arm64)
 
 PRODUCT_PACKAGES += \
     MiuiCamera
