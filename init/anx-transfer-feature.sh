@@ -1,41 +1,29 @@
 #!/system/bin/sh
-anx=/sdcard/.ANXCamera
-device=$(getprop ro.product.device)
-devices="
-raphael
-polaris
-perseus
-whyred
-gemini
-sirius
-davinci"
 
-case $devices in
-    *${device}*)
-        setprop ro.miui.notch 0
-        ;;
-    *)
-        setprop ro.miui.notch 1
-        ;;
-esac
+while [ ! -w "/sdcard" ]; do
+    sleep 1
+done
 
-while true; do; [ -w "/sdcard" ] && break || sleep 1; done
+cam_appver=$(dumpsys package com.android.camera | grep versionName | cut -d= -f2)
+cam_datadir="/sdcard/.ANXCamera"
+cam_dataver=$(cat "$cam_datadir/.data-version")
 
-if [ ! -f "$anx/.ANXCamera/.initialized" ]; then
-    rm -rf $anx
+# Check if data version is different from app version (maybe older)
+if [ "$cam_appver" != "$cam_dataver" ]; then
 
-    mkdir -p $anx/cheatcodes
-    mkdir -p $anx/cheatcodes_reference
-    mkdir -p $anx/features
-    mkdir -p $anx/features_reference
+    # Add (or renew) data version
+    echo "$cam_appver" > $cam_datadir/.data-version
 
-    cp -af /system/etc/ANXCamera/cheatcodes/. $anx/cheatcodes/
-    cp -af /system/etc/ANXCamera/cheatcodes/. $anx/cheatcodes_reference/
-    cp -af /system/etc/device_features/. $anx/features/
-    cp -af /system/etc/device_features/. $anx/features_reference/
+    # Transfer required files
+    mkdir -p $cam_datadir/cheatcodes
+    mkdir -p $cam_datadir/cheatcodes_reference
+    mkdir -p $cam_datadir/features
+    mkdir -p $cam_datadir/features_reference
+    cp -af /system/etc/ANXCamera/cheatcodes/. $cam_datadir/cheatcodes/
+    cp -af /system/etc/ANXCamera/cheatcodes/. $cam_datadir/cheatcodes_reference/
+    cp -af /system/etc/device_features/. $cam_datadir/features/
+    cp -af /system/etc/device_features/. $cam_datadir/features_reference/
 
-    touch $anx/.initialized
-
-    chown -hR $(stat -c "%U:%G" /sdcard/.) $anx
-    chmod -R 666 $anx
 fi
+
+# shfmt -l -w -s -p -i 4 -sr
